@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html ">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>2014-10-27__实现电池充电思路</title>
+	<style>
+		body{text-align: center;}
+		.div_style{width:0px;height:76px; line-height:76px; overflow:hidden;}
+	</style>
+</head>
+<body>
+<!-- 解析思路  Begin -->
+<!-- 
+
+方案一:  隐藏方式
+思路成行:
+隐藏方式,则:定时动态改变宽度,故:选择setInterval而非setTimeout
+预设好色块,外层宽度高度定好.设置display:none! 图片向右扩展div动态添加宽度,向左扩展的时候,动态隐藏div宽度
+第一:初想直接修改width,发现重复数据居多,修改宽度不灵活,优化代码,提出仅有属性 故:声明变量 每次增加的宽 最大和最小
+第二:运算数据的时候,发现一个问题,判断是否应该递减还是递增,逻辑混乱,运算东拼西凑,则: statu出来主持大局.true为递增,false为递减
+第三:看着最后,不管怎么运算,都只是更改obj的width,所以:current_width就有了.
+问题:display or visibility    none or hidden,屡试不爽,. 
+最终得知:display:none属性，HTML元素（对象）的宽度、高度等各种属性值都将“丢失”;而使用visibility:hidden属性后，HTML元素（对象）仅仅是在视觉上看不见（完全透明）
+故:hidden暂时获胜
+
+
+方案二:  遮罩层方式
+思路成行:
+大概方向,最外的遮罩层向右逐渐移动obj.left.其次,遮罩层的index一定要大于里面的层
+遮罩层用定位漂浮起来,把里面层遮住
+
+
+方案三: filter 滤镜 RevealTrans 
+思路:
+transition这个属性=6向右擦除, =7向左擦除 沿着滤镜思路 擦除再还原.
+(待验证)
+
+方案四:  向Dom动态移除添加节点方式
+
+
+<-->
+<!-- 解析思路  Begin -->
+
+<div class="div_style" id="div_style_show_hidden"><img src="file:///E:/project/plug_test//img/color.jpg" /></div>
+<script>
+
+	//电池充电
+	function fn_battery(){
+		var chg_width= 30;//"每次增加的宽,减少的宽";
+		var div_width =376; //div最大宽度
+		var div_width_min=0; //div最小宽度
+		var current_width =0; //记录当前最终宽度
+		var obj =document.getElementById('div_style_show_hidden'); //当前处理对象
+		var statu = true; //标识执行动态+与减
+		
+		var intervalId = setInterval(function(){
+			var dy_div_width =div_style_show_hidden.offsetWidth;//div的当前动态宽度
+			if(statu){
+				if(statu && dy_div_width +chg_width <= div_width){
+					current_width = (dy_div_width+chg_width) + "px";
+				}
+				else{
+					current_width = div_width + "px";
+					statu = false;
+				}
+			}else{
+				if(!statu && (dy_div_width-chg_width) >= 0){
+					current_width = (dy_div_width-chg_width) + "px";
+				}else{
+					current_width = div_width_min + "px";				
+					statu = true;
+				}
+			}
+			obj.style.width=current_width;
+			
+		},500);
+	}
+	
+	window.onload = function () {
+	   fn_battery();
+	}
+</script
+</body>
+</html>

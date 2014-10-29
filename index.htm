@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html ">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+	<style>
+		.brid_div{}
+	</style>
+    <script type="text/javascript">
+		//移动飞机
+		function left_moveAirplane(cw,ch,x,y,move_x,w_pic,h_pic,plant_stop_x,context,img,intervalId){
+			
+		}
+		//
+		function right_moveAirplane(){}
+	
+		//开始画图
+        function draw_airplane(id) {
+		   var cw = document.body.offsetWidth-50;//canvas宽度
+		   var ch = document.body.offsetHeight-50; //canvas高度
+
+		    var x = (cw-200);//图片开始X坐标
+		    var y = (ch-100);//图片开始Y坐标
+		    var w_pic_oringe = 200;//图片宽度
+		    var h_pic_oringe = 100;//图片高度
+		    var w_pic = 200;//当前图片宽度
+		    var h_pic = 100;//当前图片高度
+		    var plant_stop_x = cw - parseInt(cw/3); //向上飞的X起点
+			var pic_is_small = false; //图片是否变到最小
+
+		    var move_x = 1;//0右1左-1平等向左-2平等向右移动
+		    var mmove_y = 0; //0下1上-1
+		    var mmove_l = 1;//每次移动长度
+
+            var canvas = document.getElementById(id);
+				canvas.width=cw;
+                canvas.height=ch;
+            if (canvas == null)
+                return false;
+            var context = canvas.getContext("2d");
+			var img = new Image();
+			img.src="file:///C:/Documents%20and%20Settings/Administrator/桌面/plug_test/plug_test/plug_test/img/airplane.png"
+			img.onload = function(){
+				var intervalId = setInterval(
+					function(){
+						context.clearRect(0, 0, cw, ch);//清除画布
+						context.drawImage(img,x, y, w_pic, h_pic);		
+						if(move_x == 1){
+							//向左移
+							if(x <= plant_stop_x){
+								if(pic_is_small){
+									w_pic += 10;
+									h_pic += 5;
+									y -= 10;
+									x -= 5;
+									if(w_pic>= w_pic_oringe){
+										pic_is_small = false;
+									}
+								}else{
+									y -= 10;
+									x -= 5;
+									w_pic -= 10;
+									h_pic -= 5;
+									if(w_pic <=0){
+										pic_is_small = true;
+									}
+								}
+							}else{
+								//先平行在地上跑三分之一
+								x -= 50;
+							}
+							
+							//处理y轴是否已经到最顶端
+							if(y-50 <= 0){
+								y =50;
+							}
+						}else{
+							//向右移
+							if(x <= plant_stop_x){
+								x+=20;
+							}else{
+								
+								y += 10;
+									
+							}
+							if(y +100 >= ch){
+								y =100;
+								window.clearInterval(intervalId);
+							}
+						}
+						if(y -50 <= 0 && x-50 <= 0){
+							move_x = 0;
+							//状态控制向左还是向右
+						}
+					},100
+				);
+			}
+        }
+		
+        window.onload = function () {
+           draw_airplane("canvas_bird");
+        }
+	   
+    </script>
+</head>
+<body>
+	<center>
+		<section><header><h1></h1></header><canvas id="canvas_bird"></canvas></section>
+	</center>
+</body>
+</html>
